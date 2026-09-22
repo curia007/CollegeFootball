@@ -570,6 +570,7 @@ def print_predictions_table(predictions: List[GamePrediction], week: int, season
 
 def save_predictions_json(predictions: List[GamePrediction], filepath: str):
     """Export predictions to a formatted JSON file."""
+    os.makedirs(os.path.dirname(filepath) or '.', exist_ok=True)
     output_data = []
     for p in predictions:
         d = {
@@ -609,6 +610,7 @@ def save_predictions_json(predictions: List[GamePrediction], filepath: str):
 
 def save_predictions_csv(predictions: List[GamePrediction], filepath: str):
     """Export predictions to a CSV file for spreadsheet analysis."""
+    os.makedirs(os.path.dirname(filepath) or '.', exist_ok=True)
     headers = [
         "Game ID", "Week", "Kickoff Time", "Away Team", "Away Rank", "Away Record",
         "Home Team", "Home Rank", "Home Record", "Spread / Line", "Over / Under",
@@ -656,12 +658,12 @@ def main():
         help="Only show games involving AP Top 25 ranked teams"
     )
     parser.add_argument(
-        "--json", type=str, default="ncaa_fbs_predictions.json",
-        help="Path to export predictions as JSON (default: ncaa_fbs_predictions.json)"
+        "--json", type=str, default="data/ncaa_fbs_predictions.json",
+        help="Path to export predictions as JSON (default: data/ncaa_fbs_predictions.json)"
     )
     parser.add_argument(
-        "--csv", type=str, default="ncaa_fbs_predictions.csv",
-        help="Path to export predictions as CSV (default: ncaa_fbs_predictions.csv)"
+        "--csv", type=str, default="data/ncaa_fbs_predictions.csv",
+        help="Path to export predictions as CSV (default: data/ncaa_fbs_predictions.csv)"
     )
     parser.add_argument(
         "--no-export", action="store_true",
