@@ -16,7 +16,7 @@ Powered by real-time data from ESPN's college football endpoints, combining mark
 - **Projected Scorelines & Margins**: Calculates expected point totals and individual team scores calibrated against game over/under totals and spread margins.
 - **Confidence Rating**: Categorizes predictions into `HIGH`, `MEDIUM`, and `TOSS-UP` tiers based on win probability differentials and scoring spreads.
 - **Formatted Terminal UI**: Clean table visualization highlighting AP Top 25 matchups, kickoff schedules, predictions, and betting details.
-- **Automated Data Export**: Automatically exports full predictions to both JSON (`data/ncaa_fbs_predictions.json`) and CSV (`data/ncaa_fbs_predictions.csv`).
+- **Automated Data Export**: Automatically exports full predictions to both JSON (`data/ncaa_fbs_predictions.json`) and CSV (`data/ncaa_game_predictions.csv`).
 
 ---
 
@@ -63,8 +63,7 @@ python3 ncaa_next_game_prediction.py [OPTIONS]
 | `--week <NUM>` | Target a specific season week number (e.g. `--week 5`) |
 | `--no-export` | Skip exporting predictions to JSON and CSV files |
 | `--json <PATH>` | Custom output file path for JSON export (default: `data/ncaa_fbs_predictions.json`) |
-| `--csv <PATH>` | Custom output file path for CSV export (default: `data/ncaa_fbs_predictions.csv`) |
-| `--no-fpi` | Skip parallel fetching of ESPN FPI matchup predictor for faster execution |
+| `--csv <PATH>` | Custom output file path for CSV export (default: `data/ncaa_game_predictions.csv`) |
 
 ### Examples
 
@@ -92,11 +91,50 @@ python3 ncaa_next_game_prediction.py --week 5 --json week5_predictions.json --cs
 
 ## 📁 Output Formats
 
-### CSV Format (`data/ncaa_fbs_predictions.csv`)
-Columns include: `Game ID`, `Week`, `Kickoff`, `Away Team`, `Home Team`, `Spread`, `O/U`, `Predicted Winner`, `Predicted Score`, `Win Probability (%)`, `Confidence`, and `Broadcast`.
+Generated files are saved to the `data/` directory by default.
+
+### CSV Format (`data/ncaa_game_predictions.csv`)
+
+Exports clean, concise matchup predictions including point spreads:
+
+| Home Team | Away Team | Spread | Prediction |
+|-----------|-----------|--------|------------|
+| Coastal Carolina Chanticleers | Liberty Flames | LIB -2.5 | Liberty Flames |
+| Temple Owls | Army Black Knights | ARMY -3 | Army Black Knights |
+| Rutgers Scarlet Knights | Howard Bison | N/A | Rutgers Scarlet Knights |
 
 ### JSON Format (`data/ncaa_fbs_predictions.json`)
-Structured JSON containing full team metadata, records, rankings, betting odds, probabilities, and predicted scorelines.
+
+Structured JSON containing full team metadata, records, rankings, betting odds, probabilities, and predicted scorelines:
+
+```json
+[
+  {
+    "game_id": "401628468",
+    "game_name": "Liberty Flames at Coastal Carolina Chanticleers",
+    "season_year": 2026,
+    "week_number": 4,
+    "kickoff_utc": "2026-09-26T23:00Z",
+    "kickoff_local": "Sat, Sep 26 • 11:00 PM UTC",
+    "venue": "Brooks Stadium",
+    "broadcast": "ESPN+",
+    "is_neutral_site": false,
+    "away_team": { "name": "Flames", "display_name": "Liberty Flames", "rank": 99, "record": "3-0" },
+    "home_team": { "name": "Chanticleers", "display_name": "Coastal Carolina Chanticleers", "rank": 99, "record": "2-1" },
+    "odds": { "provider": "ESPN BET", "details": "LIB -2.5", "spread": -2.5, "over_under": 54.5 },
+    "prediction": {
+      "predicted_winner": "Liberty Flames",
+      "predicted_winner_abbreviation": "LIB",
+      "predicted_loser": "Coastal Carolina Chanticleers",
+      "win_probability_winner_pct": 57.2,
+      "predicted_home_score": 26,
+      "predicted_away_score": 28,
+      "predicted_margin": 2,
+      "confidence_level": "MEDIUM"
+    }
+  }
+]
+```
 
 ---
 

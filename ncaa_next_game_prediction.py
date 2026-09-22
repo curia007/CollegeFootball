@@ -609,38 +609,20 @@ def save_predictions_json(predictions: List[GamePrediction], filepath: str):
 
 
 def save_predictions_csv(predictions: List[GamePrediction], filepath: str):
-    """Export predictions to a CSV file for spreadsheet analysis."""
+    """Export predictions to a CSV file with home team, away team, spread, and prediction."""
     os.makedirs(os.path.dirname(filepath) or '.', exist_ok=True)
-    headers = [
-        "Game ID", "Week", "Kickoff Time", "Away Team", "Away Rank", "Away Record",
-        "Home Team", "Home Rank", "Home Record", "Spread / Line", "Over / Under",
-        "Predicted Winner", "Win Probability (%)", "Predicted Score (Away-Home)",
-        "Predicted Margin", "Confidence Level", "Venue", "Broadcast"
-    ]
+    headers = ["Home Team", "Away Team", "Spread", "Prediction"]
     
     with open(filepath, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(headers)
         for p in predictions:
+            spread_str = p.odds.details if (p.odds and p.odds.details) else "N/A"
             writer.writerow([
-                p.game_id,
-                p.week_number,
-                p.kickoff_local,
-                p.away_team.display_name,
-                p.away_team.rank if p.away_team.rank <= 25 else "UR",
-                p.away_team.record,
                 p.home_team.display_name,
-                p.home_team.rank if p.home_team.rank <= 25 else "UR",
-                p.home_team.record,
-                p.odds.details if p.odds else "N/A",
-                p.odds.over_under if (p.odds and p.odds.over_under) else "N/A",
-                p.predicted_winner,
-                f"{p.win_probability_winner_pct:.1f}%",
-                f"{p.predicted_away_score} - {p.predicted_home_score}",
-                p.predicted_margin,
-                p.confidence_level,
-                p.venue_name,
-                p.broadcast
+                p.away_team.display_name,
+                spread_str,
+                p.predicted_winner
             ])
     print(f"✓ Saved CSV predictions to: {filepath}")
 
@@ -662,8 +644,8 @@ def main():
         help="Path to export predictions as JSON (default: data/ncaa_fbs_predictions.json)"
     )
     parser.add_argument(
-        "--csv", type=str, default="data/ncaa_fbs_predictions.csv",
-        help="Path to export predictions as CSV (default: data/ncaa_fbs_predictions.csv)"
+        "--csv", type=str, default="data/ncaa_game_predictions.csv",
+        help="Path to export predictions as CSV (default: data/ncaa_game_predictions.csv)"
     )
     parser.add_argument(
         "--no-export", action="store_true",
